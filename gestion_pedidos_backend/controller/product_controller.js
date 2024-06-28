@@ -10,7 +10,7 @@ exports.create_product = async (req, res) => {
 };
 
 exports.list_products = async (req, res) => {
-    try {
+    try {        
         const products = await product_model.list_products();
         res.status(200).json(products);
     } catch (error) {
@@ -31,7 +31,6 @@ exports.list_products_id = async (req, res) => {
 exports.search_product_id = async (req, res) => {
     try {
         const products = await product_model.search_product_id(req.params.id);
-        console.log(products);
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({error: error.message});

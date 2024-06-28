@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 const user = {
     get_user: async(user,password) => {
-        const [rows] = await db.promise().query("SELECT * FROM user WHERE user_name = ? AND password = ?", [user,password]);
+        const [rows] = await db.promise().query("SELECT name,user_name FROM user WHERE user_name = ? AND password = ?", [user,password]);
         return rows[0];
     }
 };
