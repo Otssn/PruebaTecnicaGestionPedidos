@@ -27,9 +27,13 @@ const Product = () => {
 
     const saveProduct = async (data) => {
         try {
-            const result = await createProducts(data)
-            toast.current.show({ severity: 'success', summary: 'Guardado', detail: 'Se ha guardado de forma exitosa', life: 3000 });
-            window.location.reload();
+            if(data.unit_value > 0){
+                const result = await createProducts(data)
+                toast.current.show({ severity: 'success', summary: 'Guardado', detail: 'Se ha guardado de forma exitosa', life: 3000 });
+                window.location.reload();
+            }else{
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'El valor unitario debe ser mayor a 0' });    
+            }
         } catch (error) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al registrar el producto' });
         }
@@ -41,7 +45,7 @@ const Product = () => {
             toast.current.show({ severity: 'success', summary: 'Guardado', detail: 'Se ha actualizado de forma exitosa', life: 3000 });
             window.location.reload();
         } catch (error) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al aztualizar el producto' });
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el producto' });
         }
     }
 
@@ -149,7 +153,7 @@ const Product = () => {
                         <br />
 
                         <h5>Descripción</h5>
-                        <InputTextarea rows={5} cols={55} id="descriptionLaber" placeholder="Descripcion" type="textarea" {...register("description", { required: true })} />
+                        <InputTextarea rows={5} cols={55} id="descriptionLaber" placeholder="Descripcion" type="textarea" {...register("description", { required: false })} />
                         
                         <br />
                         {errors.description && <small id="descriptionLaber" className="p-error block">Este campo es obligatorio*</small>}

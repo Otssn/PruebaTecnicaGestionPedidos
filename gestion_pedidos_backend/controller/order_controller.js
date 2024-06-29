@@ -44,3 +44,21 @@ exports.delete_order_id = async (req, res) => {
         res.status(500).json({error: error.message});
     }
 };
+
+exports.count_order = async (req,res) => {
+    try {
+        const products = await order_model.count_order();
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+};
+
+exports.getOrderByMonth = async (req,res) => {
+    try {
+        const products = await order_model.getOrderByMonth();
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+};

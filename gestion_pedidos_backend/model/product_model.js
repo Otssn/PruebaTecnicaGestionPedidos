@@ -24,6 +24,10 @@ const product = {
     delete_product_id: async (id) => {
         const [rows] = await db.promise().query("DELETE FROM product WHERE id = ?", [id]);
         return rows[0]
+    },
+    count_product: async () => {
+        const [rows] = await db.promise().query("SELECT count(*) as count_product FROM product");
+        return rows[0]
     }
 };
 

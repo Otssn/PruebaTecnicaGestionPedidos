@@ -28,4 +28,15 @@ export const deleteProduct = async (id) => {
 export const searchProduct = async (id) => {
         const response = await api.get(`api/product/searchproduct/${id}`,{headers:{authorization: localStorage.getItem('authorization')}});
         return response.data;
-}
+};
+
+export const searchProductId = async (id) => {
+    const response = await api.get(`api/product/listproductsid/${id}`,{headers:{authorization: localStorage.getItem('authorization')}});
+    console.log(response.data)
+    return response.data;
+};
+
+export const countProduct = async () => {
+    const response = await api.get('api/product/countproduct',{headers:{authorization: localStorage.getItem('authorization')}});
+    return response.data;
+};

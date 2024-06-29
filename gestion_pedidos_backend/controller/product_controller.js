@@ -20,8 +20,7 @@ exports.list_products = async (req, res) => {
 
 exports.list_products_id = async (req, res) => {
     try {
-        const ids = req.body.id.join();
-        const products = await product_model.list_products_id(ids);
+        const products = await product_model.list_products_id(req.params.id);
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({error: error.message});
@@ -49,6 +48,15 @@ exports.update_product_id = async (req, res) => {
 exports.delete_product_id = async (req, res) => {
     try {
         const products = await product_model.delete_product_id(req.params.id);
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+};
+
+exports.count_product = async (req,res) => {
+    try {
+        const products = await product_model.count_product();
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({error: error.message});
