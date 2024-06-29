@@ -32,7 +32,6 @@ export const searchProduct = async (id) => {
 
 export const searchProductId = async (id) => {
     const response = await api.get(`api/product/listproductsid/${id}`,{headers:{authorization: localStorage.getItem('authorization')}});
-    console.log(response.data)
     return response.data;
 };
 

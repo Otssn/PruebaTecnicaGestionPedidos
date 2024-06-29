@@ -9,13 +9,12 @@ import { Dialog } from 'primereact/dialog';
 import { Calendar } from 'primereact/calendar';
 import { useForm } from "react-hook-form";
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Checkbox } from 'primereact/checkbox';
 import { listProducts,searchProductId } from "../services/API_product";
-import { format } from 'date-fns';
+import { format } from 'date-fns-tz';
 
 const Order = () => {
     const [displayBasic, setDisplayBasic] = useState(false);
@@ -25,7 +24,7 @@ const Order = () => {
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [totalCost, setTotalCost] = useState(0);
     const [products, setProduct] = useState([]);
-    const [fechaOrden, setFechaOrden] = useState(null);
+    const [date, setDate] = useState(null);
 
     const onHandleNew = () => {
         setIsNew(true);
@@ -37,7 +36,6 @@ const Order = () => {
             const ids = selectedProducts.map(product => product.id);
             data.list_products = JSON.stringify(ids);
             data.total = totalCost
-            console.log(data)
             const result = await createOrder(data)
             toast.current.show({ severity: 'success', summary: 'Guardado', detail: 'Se ha guardado de forma exitosa', life: 3000 });
             window.location.reload();
@@ -50,7 +48,11 @@ const Order = () => {
         try {
             const ids = selectedProducts.map(product => product.id);
             data.list_products = JSON.stringify(ids);
-            data.total = totalCost
+            data.total = totalCost;
+            if(!data.date_order){
+                data.date_order = data.date
+            }            
+            delete data.date;
             const result = await updateOrder(id, data)
             toast.current.show({ severity: 'success', summary: 'Guardado', detail: 'Se ha actualizado de forma exitosa', life: 3000 });
             window.location.reload();
@@ -62,8 +64,10 @@ const Order = () => {
 
     const onHide = (name) => {
         setDisplayBasic(false);
-        setId('')
-        reset()
+        setId('');
+        reset();
+        setSelectedProducts([]);
+        setTotalCost(0);
     }
 
     useEffect(() => {
@@ -98,17 +102,19 @@ const Order = () => {
             setDisplayBasic(true);
             try {
                 const result = await searchOrder(node.id);
-                const date_order_out_format = new Date(result.date_order);
-                const date_order_format = format(date_order_out_format, 'dd/mm/yyyy');
-                console.log(date_order_format)
+                const date_order_out_format = result.date_order;      
+                // const date_order_format = format(new Date(date_order_out_format), 'eee MMM dd yyyy HH:mm:ss [GMT]XX (z)', { timeZone: 'UTC' });
+                const date_order_format = format(new Date(date_order_out_format), 'dd/MM/yyyy');
                 setId(result.id);
-                setValue('date_order', date_order_format);
-                setFechaOrden(date_order_format);
+                setValue('date_order',date_order_format);
+                setValue('date',date_order_format);
+                setDate(date_order_format);
                 setValue('client_name', result.client_name);
                 setTotalCost(result.total);
                 search_product_ids(result.list_products);
                 
             } catch (error) {
+                console.log(error)
                 toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al consultar la orden' });
                 setDisplayBasic(false);
             }
@@ -199,12 +205,15 @@ const Order = () => {
                     <form onSubmit={handleSubmit((isNew) ? saveOrder : updateOrders)}>
 
                         <h5>Fecha de la orden</h5>
-                        <Calendar id="dateOrderLaber" dateFormat="dd/mm/yy" value={fechaOrden} type="text" {...register("date_order", { required: true })} />
+                        <InputText id="" placeholder="" type="text" {...register("date", { required: true })}  disabled />
+
+                        <h5>Fecha de la orden</h5>
+                        <Calendar id="dateOrderLaber" type="text" showIcon {...register("date_order", { required: true })} />
                         {errors.dateOrderLaber && <small id="dateOrderLaber" className="p-error block">Este campo es obligatorio*</small>}
 
 
                         <h5>Nombre del cliente</h5>
-                        <InputText id="clientNameLaber" placeholder="nombre del cliente" type="text" {...register("client_name", { required: true })} />
+                        <InputText id="clientNameLaber" placeholder="nombre del cliente" type="text" {...register("client_name", { required: true })}  />
                         {errors.client_name && <small id="clientNameLaber" className="p-error block">Este campo es obligatorio*</small>}
 
                         <div className="p-field">

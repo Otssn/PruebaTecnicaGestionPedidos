@@ -32,12 +32,10 @@ export const searchOrder = async (id) => {
 
 export const countOrder = async () => {
     const response = await api.get('api/order/countorder',{headers:{authorization: localStorage.getItem('authorization')}});
-    console.log(response.data)
     return response.data;
 };
 
 export const countOrderByMonth = async () => {
     const response = await api.get('api/order/countorderbymonth',{headers:{authorization: localStorage.getItem('authorization')}});
-    console.log(response.data)
     return response.data;
 };

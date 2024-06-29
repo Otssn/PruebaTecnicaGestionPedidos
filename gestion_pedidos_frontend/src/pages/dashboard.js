@@ -21,7 +21,6 @@ const Dashboard = () => {
                 setCountProduct(productData.count_product);
 
                 const orderDataByMonth = await countOrderByMonth();
-                console.log(orderDataByMonth)
                 setDate(orderDataByMonth)
             } catch (error) {
                 console.error('Error fetching products:',);
